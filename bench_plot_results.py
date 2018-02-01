@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""Generate benchmarking result figures
+"""Generates a figure that shows all benchmarking results
 """
 import sys
 import os
@@ -7,17 +7,15 @@ import pylab
 import json
 import collections
 
-#Benchmark = collections.namedtuple('Benchmark', ['implementation', 'threads', 'time_per_iteration'], verbose=False)
 BenchmarkPoint = collections.namedtuple('BenchmarkPoint', ['threads', 'time_per_iteration'], verbose=False)
 filled_markers = ('o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X')
 
 def plot_graphs(outfilename, benchmark_dict):
-    """Plot graphs for functions
-    Make scatter plots for the functions and their variants.
+    """Plots the given dictionary of benchmark results
     """
     pylab.clf()
     pylab.xlabel('Number of threads')
-    pylab.ylabel('CPU cycles per malloc op')          # bench-malloc-thread uses RDTSC counter for reporting time
+    pylab.ylabel('CPU cycles per malloc op')          # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
 
     nmarker=0
     for impl_name in benchmark_dict.keys():
@@ -53,7 +51,6 @@ def main(args):
             
             bm[filename] = []
             for bench in bench_list:
-                #bm[filename] = Benchmark(filename, bench['functions']['malloc']['']['threads'], bench['functions']['malloc']['']['time_per_iteration'])
                 bm[filename].append(BenchmarkPoint(bench['functions']['malloc']['']['threads'], bench['functions']['malloc']['']['time_per_iteration']))
             
             print('Found {} data points in {}...'.format(len(bm[filename]), filename))

@@ -1,5 +1,6 @@
 #!/usr/bin/python
-"""Generate benchmarking results
+"""Generate benchmarking results in JSON form, using GNU libc benchmarking utility;
+different allocators are injected into that utility by using LD_PRELOAD trick.
 """
 import sys
 import os
