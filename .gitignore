@@ -1,0 +1,13 @@
+glibc-build/
+glibc-install/
+glibc/
+gperftools/
+jemalloc-install/
+jemalloc/
+tcmalloc-install/
+*.json
+*.png
+.cproject
+.project
+.pydevproject
+
