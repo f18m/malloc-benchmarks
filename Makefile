@@ -16,6 +16,12 @@
 
 topdir=$(shell readlink -f .)
 
+ifdef NTHREADS
+benchmark_nthreads := $(NTHREADS)
+else
+benchmark_nthreads := 1 2 4 8 16
+endif
+
 benchmark_result_json := $(shell hostname)-results.json
 benchmark_result_png := $(shell hostname)-results.png
 
@@ -83,6 +89,6 @@ build: $(glibc_build_dir)/benchtests/bench-malloc-thread \
 	
 collect_results:
 	@echo "Starting to collect performance benchmarks."
-	./bench_collect_results.py $(benchmark_result_json) 1 2 4 8 16
+	./bench_collect_results.py $(benchmark_result_json) $(benchmark_nthreads)
 	./bench_plot_results.py $(benchmark_result_png) *$(benchmark_result_json)
 
