@@ -29,7 +29,7 @@ use_git := 1
 endif
 
 ifdef NUMPROC
-parallel_flags := $(NUMPROC)
+parallel_flags := -j$(NUMPROC)
 else
 # default value
 parallel_flags := -j4 
