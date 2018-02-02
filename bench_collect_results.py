@@ -4,7 +4,6 @@ different allocators are injected into that utility by using LD_PRELOAD trick.
 """
 import sys
 import os
-import pylab
 import json
 import subprocess
 
@@ -99,18 +98,18 @@ def main(args):
         print('Usage: %s <output filename postfix> <num threads test1> <num threads test2> ...' % sys.argv[0])
         sys.exit(os.EX_USAGE)
 
-    outfile_postfix = args[0]
-    success = 0
+    # parse args
+    outfile_path_prefix,outfile_postfix = os.path.split(args[0])
+    thread_values = args[1:]
     
     check_requirements()
     
+    success = 0
     for idx in range(0,len(implementations)):
-        outfile = implementations[idx] + '-' + outfile_postfix
+        outfile = os.path.join(outfile_path_prefix, implementations[idx] + '-' + outfile_postfix)
         print "Testing implementation '{}'. Saving results into '{}'".format(implementations[idx],outfile)
         
-        thread_values = args[1:]
         print "Will run tests for {} different number of threads".format(len(thread_values))
-    
         success = success + run_benchmark(outfile,thread_values,idx)
 
     return success

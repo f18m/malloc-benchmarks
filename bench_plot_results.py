@@ -3,9 +3,10 @@
 """
 import sys
 import os
-import pylab
 import json
 import collections
+
+import matplotlib.pyplot as plotlib
 
 BenchmarkPoint = collections.namedtuple('BenchmarkPoint', ['threads', 'time_per_iteration'], verbose=False)
 filled_markers = ('o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X')
@@ -13,9 +14,9 @@ filled_markers = ('o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd
 def plot_graphs(outfilename, benchmark_dict):
     """Plots the given dictionary of benchmark results
     """
-    pylab.clf()
-    pylab.xlabel('Number of threads')
-    pylab.ylabel('CPU cycles per malloc op')          # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
+    plotlib.clf()
+    plotlib.xlabel('Number of threads')
+    plotlib.ylabel('CPU cycles per malloc op')          # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
 
     nmarker=0
     for impl_name in benchmark_dict.keys():
@@ -24,16 +25,16 @@ def plot_graphs(outfilename, benchmark_dict):
         # add a line plot
         X = [ x.threads for x in current_bm ]
         Y = [ y.time_per_iteration for y in current_bm ]
-        lines = pylab.plot(X, Y, '-' + filled_markers[nmarker], label=impl_name)
+        lines = plotlib.plot(X, Y, '-' + filled_markers[nmarker], label=impl_name)
         
-        pylab.xlim(0, max(X)+1)
-        pylab.setp(lines, 'color', 'r')
+        plotlib.xlim(0, max(X)+1)
+        plotlib.setp(lines, 'color', 'r')
         nmarker=nmarker+1
 
     print("Writing plot into '%s'" % outfilename)
-    pylab.legend(loc='upper left')
-    pylab.savefig(outfilename)
-    pylab.show()
+    plotlib.legend(loc='upper left')
+    plotlib.savefig(outfilename)
+    plotlib.show()
 
 
 def main(args):

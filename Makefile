@@ -35,6 +35,15 @@ else
 parallel_flags := -j4 
 endif
 
+ifdef PREFIX
+benchmark_prefix := $(PREFIX)
+else
+# default value
+benchmark_prefix := $(shell hostname)
+endif
+
+
+
 #
 # Constants
 #
@@ -42,8 +51,8 @@ endif
 topdir=$(shell readlink -f .)
 
 
-benchmark_result_json := $(shell hostname)-results.json
-benchmark_result_png := $(shell hostname)-results.png
+benchmark_result_json := $(benchmark_prefix)-results.json
+benchmark_result_png := $(benchmark_prefix)-results.png
 
 glibc_url := git://sourceware.org/git/glibc.git
 tcmalloc_url := https://github.com/gperftools/gperftools.git
@@ -57,6 +66,7 @@ glibc_install_dir := $(topdir)/glibc-install
 tcmalloc_install_dir := $(topdir)/tcmalloc-install
 jemalloc_install_dir := $(topdir)/jemalloc-install
 
+results_dir := results/$(shell date +%F)
 
 #
 # Functions
@@ -91,6 +101,7 @@ $(glibc_build_dir)/benchtests/bench-malloc-thread:
 	cd $(glibc_build_dir) && \
 		../glibc/configure --prefix=$(glibc_install_dir) && \
 		make $(parallel_flags) && \
+		make install && \
 		make $(parallel_flags) bench BENCHSET=malloc-thread
 	[ -x $(glibc_build_dir)/benchtests/bench-malloc-thread ] && echo "GNU libc benchmarking utility is ready!" || echo "Cannot find GNU libc benchmarking utility! Cannot collect benchmark results"
 
@@ -114,7 +125,19 @@ build: $(glibc_build_dir)/benchtests/bench-malloc-thread \
 	@echo "Congrats! Successfully built all malloc implementations to test."
 	
 collect_results:
+	@mkdir -p $(results_dir)
 	@echo "Starting to collect performance benchmarks."
-	./bench_collect_results.py $(benchmark_result_json) $(benchmark_nthreads)
-	./bench_plot_results.py $(benchmark_result_png) *$(benchmark_result_json)
+	./bench_collect_results.py $(results_dir)/$(benchmark_result_json) $(benchmark_nthreads)
+	@echo "Collecting hardware information in $(results_dir)/hardware-inventory.txt"
+	@sudo lshw -short -class memory -class processor	> $(results_dir)/hardware-inventory.txt
+	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt
+	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
+
+plot_results:
+	./bench_plot_results.py $(results_dir)/$(benchmark_result_png) $(results_dir)/*$(benchmark_result_json)
+
+upload_results:
+	git add $(results_dir)/*$(benchmark_result_json) $(results_dir)/$(benchmark_result_png) $(results_dir)/hardware-inventory.txt
+	git commit -m "Adding results obtained on $(shell hostname)"
+	@echo "Run 'git push' to push online your results (required GIT repo write access)"
 
