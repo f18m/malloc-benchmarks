@@ -28,7 +28,12 @@ else
 use_git := 1
 endif
 
-
+ifdef NUMPROC
+parallel_flags := $(NUMPROC)
+else
+# default value
+parallel_flags := -j4 
+endif
 
 #
 # Constants
@@ -51,7 +56,6 @@ glibc_build_dir := $(topdir)/glibc-build
 glibc_install_dir := $(topdir)/glibc-install
 tcmalloc_install_dir := $(topdir)/tcmalloc-install
 jemalloc_install_dir := $(topdir)/jemalloc-install
-parallel_flags := -j4 
 
 
 #
