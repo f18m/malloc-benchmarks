@@ -11,16 +11,31 @@
 
 
 #
+# Parameters from command line
+#
+
+ifdef NTHREADS
+benchmark_nthreads := $(NTHREADS)
+else
+# default value
+benchmark_nthreads := 1 2 4 8 16
+endif
+
+ifdef CLONE_FROM_GIT
+use_git := $(CLONE_FROM_GIT)
+else
+# default value
+use_git := 1
+endif
+
+
+
+#
 # Constants
 #
 
 topdir=$(shell readlink -f .)
 
-ifdef NTHREADS
-benchmark_nthreads := $(NTHREADS)
-else
-benchmark_nthreads := 1 2 4 8 16
-endif
 
 benchmark_result_json := $(shell hostname)-results.json
 benchmark_result_png := $(shell hostname)-results.png
@@ -28,6 +43,9 @@ benchmark_result_png := $(shell hostname)-results.png
 glibc_url := git://sourceware.org/git/glibc.git
 tcmalloc_url := https://github.com/gperftools/gperftools.git
 jemalloc_url := https://github.com/jemalloc/jemalloc.git
+
+glibc_version := 2.26
+glibc_alt_wget_url := https://ftpmirror.gnu.org/libc/glibc-$(glibc_version).tar.xz
 
 glibc_build_dir := $(topdir)/glibc-build
 glibc_install_dir := $(topdir)/glibc-install
@@ -50,7 +68,11 @@ all: download build collect_results
 
 download:
 	@echo "Downloading all malloc implementations"
+ifeq ($(use_git),1)
 	@[ ! -d glibc ] && git clone $(glibc_url) || echo "glibc GIT repo seems to be already there"
+else
+	@[ ! -d glibc ] && ( wget $(glibc_alt_wget_url) && tar xvf glibc-$(glibc_version).tar.xz && mv glibc-$(glibc_version) glibc ) || echo "glibc GIT repo seems to be already there"
+endif
 	@[ ! -d gperftools ] && git clone $(tcmalloc_url) || echo "Google perftools GIT repo seems to be already there"
 	@[ ! -d jemalloc ] && git clone $(jemalloc_url) || echo "Jemalloc GIT repo seems to be already there"
 
