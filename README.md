@@ -41,4 +41,5 @@ On the other machine where you want to plot results:
 
 ## Example benchmarks
 
+![Example graph](results/2018-02-08/desktop-corei5-results.png "Example results obtained on 4-core Intel Core i5 CPU")
 
