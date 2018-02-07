@@ -37,3 +37,8 @@ On the other machine where you want to plot results:
    mv ../results .
    make plot_results
 ```
+
+
+## Example benchmarks
+
+
