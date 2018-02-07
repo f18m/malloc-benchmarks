@@ -22,7 +22,7 @@ impl_preload_libs = [
            jemalloc_install_dir + '/lib/libjemalloc.so'
            ]
 
-required_libs= [ 'libstdc++.so', 'libgcc_s.so.1' ]
+required_libs= [ 'libstdc++.so.6', 'libgcc_s.so.1' ]
 required_libs_fullpaths = []
 
 def find(name, paths):
@@ -50,7 +50,7 @@ def check_requirements():
             print("Found required lib {}".format(preloadlib))
 
     for reqlib in required_libs:
-        full_path = find(reqlib, ['/usr/lib', '/lib'])
+        full_path = find(reqlib, ['/usr/lib', '/lib', '/lib64'])
         if len(full_path)==0:
             print("Could not find required shared library {}".format(reqlib))
             sys.exit(2)

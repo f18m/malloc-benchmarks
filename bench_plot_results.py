@@ -19,6 +19,8 @@ def plot_graphs(outfilename, benchmark_dict):
     plotlib.ylabel('CPU cycles per malloc op')          # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
 
     nmarker=0
+    max_x=[]
+    max_y=[]
     for impl_name in benchmark_dict.keys():
         current_bm = benchmark_dict[impl_name]
         
@@ -27,9 +29,14 @@ def plot_graphs(outfilename, benchmark_dict):
         Y = [ y.time_per_iteration for y in current_bm ]
         lines = plotlib.plot(X, Y, '-' + filled_markers[nmarker], label=impl_name)
         
-        plotlib.xlim(0, max(X)+1)
-        plotlib.setp(lines, 'color', 'r')
-        nmarker=nmarker+1
+        # remember max X/Y
+        max_x.append(max(X))
+        max_y.append(max(Y))
+        
+    plotlib.xlim(0, max(max_x)*1.1)
+    plotlib.ylim(0, max(max_y)*1.3)
+    plotlib.setp(lines, 'color', 'r')
+    nmarker=nmarker+1
 
     print("Writing plot into '%s'" % outfilename)
     plotlib.legend(loc='upper left')
@@ -45,8 +52,9 @@ def main(args):
         sys.exit(os.EX_USAGE)
 
     bm = {}
-    for filename in args[1:]:
-        with open(filename, 'r') as benchfile:
+    for filepath in args[1:]:
+        with open(filepath, 'r') as benchfile:
+            filename = os.path.basename(filepath)
             bench_list = json.load(benchfile)
             #print json.dumps(bench_list, sort_keys=True, indent=4, separators=(',', ': '))
             
@@ -54,7 +62,7 @@ def main(args):
             for bench in bench_list:
                 bm[filename].append(BenchmarkPoint(bench['functions']['malloc']['']['threads'], bench['functions']['malloc']['']['time_per_iteration']))
             
-            print('Found {} data points in {}...'.format(len(bm[filename]), filename))
+            print('Found {} data points in {}...'.format(len(bm[filename]), filepath))
             
     plot_graphs(args[0], bm)
 

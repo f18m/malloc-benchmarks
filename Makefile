@@ -42,6 +42,13 @@ else
 benchmark_prefix := $(shell hostname)
 endif
 
+ifdef RESULT_DIRNAME
+results_dir := $(RESULT_DIRNAME)
+else
+# default value
+results_dir := results/$(shell date +%F)
+endif
+
 
 
 #
@@ -49,7 +56,6 @@ endif
 #
 
 topdir=$(shell readlink -f .)
-
 
 benchmark_result_json := $(benchmark_prefix)-results.json
 benchmark_result_png := $(benchmark_prefix)-results.png
@@ -66,7 +72,6 @@ glibc_install_dir := $(topdir)/glibc-install
 tcmalloc_install_dir := $(topdir)/tcmalloc-install
 jemalloc_install_dir := $(topdir)/jemalloc-install
 
-results_dir := results/$(shell date +%F)
 
 #
 # Functions
@@ -76,9 +81,9 @@ results_dir := results/$(shell date +%F)
 # Targets
 #
 
-.PHONY: all download build collect_results
+.PHONY: all download build collect_results plot_results upload_results
 
-all: download build collect_results
+all: download build collect_results plot_results
 
 download:
 	@echo "Downloading all malloc implementations"
@@ -136,8 +141,9 @@ collect_results:
 plot_results:
 	./bench_plot_results.py $(results_dir)/$(benchmark_result_png) $(results_dir)/*$(benchmark_result_json)
 
+# the following target is mostly useful only to the maintainer of the github project:
 upload_results:
-	git add $(results_dir)/*$(benchmark_result_json) $(results_dir)/$(benchmark_result_png) $(results_dir)/hardware-inventory.txt
+	git add -f $(results_dir)/*$(benchmark_result_json) $(results_dir)/$(benchmark_result_png) $(results_dir)/hardware-inventory.txt
 	git commit -m "Adding results obtained on $(shell hostname)"
 	@echo "Run 'git push' to push online your results (required GIT repo write access)"
 
