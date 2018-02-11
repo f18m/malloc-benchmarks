@@ -55,7 +55,7 @@ GNU libc developers. They give an idea on how much performances can be different
 
 </td>
 <td>
-Relevant HW information of machine used for testing available [here](results/2018-02-11-desktop-corei5/hardware-inventory.txt). 
+Relevant HW information of machine used for testing available [here](results/2018-02-11-desktop-corei5/hardware-inventory.txt)
 
 'system_default' is GNU libc version 2.23 (default for Ubuntu 16.04 LTS)
 
@@ -75,7 +75,7 @@ Relevant HW information of machine used for testing available [here](results/201
 
 </td>
 <td>
-Relevant HW information of machine used for testing available [here](results/2018-02-11-desktop-xeon3470/hardware-inventory.txt). 
+Relevant HW information of machine used for testing available [here](results/2018-02-11-desktop-xeon3470/hardware-inventory.txt)
 
 'system_default' is GNU libc version 2.23 (default for Ubuntu 16.04 LTS)
 
@@ -95,7 +95,7 @@ Relevant HW information of machine used for testing available [here](results/201
 
 </td>
 <td>
-Relevant HW information of machine used for testing available [here](results/2018-02-11-server-xeon2680/hardware-inventory.txt). 
+Relevant HW information of machine used for testing available [here](results/2018-02-11-server-xeon2680/hardware-inventory.txt)
 
 'system_default' is GNU libc version 2.17 (default for Centos 7)
 
