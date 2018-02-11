@@ -1,5 +1,8 @@
 #
-# Downloads, configure and compiles 3 different software packages:
+# This makefile will build a small benchmarking utility for 'malloc' implementations and will
+# run it with different implementations saving results into JSON files.
+#
+# Specifically this makefile downloads, configure and compiles 3 different software packages:
 #  - GNU libc
 #  - Google perftools (tcmalloc)
 #  - jemalloc
@@ -8,7 +11,8 @@
 #  - GNU libc 2.26
 #  - Google perftools (tcmalloc) 2.6.3
 #  - jemalloc 5.0.1
-
+#
+#
 
 #
 # Parameters from command line
@@ -49,6 +53,14 @@ else
 results_dir := results/$(shell date +%F)
 endif
 
+ifdef IMPLEMENTATIONS
+implem_list := $(IMPLEMENTATIONS)
+else
+# default value
+implem_list := system_default glibc tcmalloc jemalloc
+endif
+
+
 
 
 #
@@ -86,14 +98,21 @@ jemalloc_install_dir := $(topdir)/jemalloc-install
 all: download build collect_results plot_results
 
 download:
-	@echo "Downloading all malloc implementations"
+	@echo "Downloading [$(implem_list)] malloc implementations"
+ifeq ($(findstring glibc,$(implem_list)),glibc)
 ifeq ($(use_git),1)
 	@[ ! -d glibc ] && git clone $(glibc_url) || echo "glibc GIT repo seems to be already there"
 else
 	@[ ! -d glibc ] && ( wget $(glibc_alt_wget_url) && tar xvf glibc-$(glibc_version).tar.xz && mv glibc-$(glibc_version) glibc ) || echo "glibc GIT repo seems to be already there"
 endif
+endif
+ifeq ($(findstring tcmalloc,$(implem_list)),tcmalloc)
 	@[ ! -d gperftools ] && git clone $(tcmalloc_url) || echo "Google perftools GIT repo seems to be already there"
+endif
+ifeq ($(findstring jemalloc,$(implem_list)),jemalloc)
 	@[ ! -d jemalloc ] && git clone $(jemalloc_url) || echo "Jemalloc GIT repo seems to be already there"
+endif
+
 
 #
 # A couple of notes about GNU libc:
@@ -124,15 +143,23 @@ $(jemalloc_install_dir)/lib/libjemalloc.so:
 		make && \
 		( make install || true )
 		
-build: $(glibc_build_dir)/benchtests/bench-malloc-thread \
-		$(tcmalloc_install_dir)/lib/libtcmalloc.so \
-		$(jemalloc_install_dir)/lib/libjemalloc.so
-	@echo "Congrats! Successfully built all malloc implementations to test."
+build:
+	$(MAKE) -C benchmark-src
+ifeq ($(findstring glibc,$(implem_list)),glibc)
+	$(MAKE) $(glibc_build_dir)/benchtests/bench-malloc-thread
+endif
+ifeq ($(findstring tcmalloc,$(implem_list)),tcmalloc)
+	$(MAKE) $(tcmalloc_install_dir)/lib/libtcmalloc.so
+endif
+ifeq ($(findstring jemalloc,$(implem_list)),jemalloc)
+	$(MAKE) $(jemalloc_install_dir)/lib/libjemalloc.so
+endif
+	@echo "Congrats! Successfully built all [$(implem_list)] malloc implementations to test."
 	
 collect_results:
 	@mkdir -p $(results_dir)
 	@echo "Starting to collect performance benchmarks."
-	./bench_collect_results.py $(results_dir)/$(benchmark_result_json) $(benchmark_nthreads)
+	./bench_collect_results.py "$(implem_list)" $(results_dir)/$(benchmark_result_json) $(benchmark_nthreads)
 	@echo "Collecting hardware information in $(results_dir)/hardware-inventory.txt"
 	@sudo lshw -short -class memory -class processor	> $(results_dir)/hardware-inventory.txt
 	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt

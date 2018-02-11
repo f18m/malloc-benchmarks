@@ -11,16 +11,25 @@ import subprocess
 # Constants
 #
 
-implementations = [ 'glibc', 'tcmalloc', 'jemalloc' ]
-benchmark_util = 'glibc-build/benchtests/bench-malloc-thread'
+internal_benchmark_util = 'benchmark-src/bench-malloc-thread'
+
+glibc_install_dir = 'glibc-install'
 tcmalloc_install_dir = 'tcmalloc-install'
 jemalloc_install_dir = 'jemalloc-install'
 
-impl_preload_libs = [
-           '', 
-           tcmalloc_install_dir + '/lib/libtcmalloc.so',
-           jemalloc_install_dir + '/lib/libjemalloc.so'
-           ]
+impl_preload_libs = {
+    'system_default':'',
+    'glibc': '',
+    'tcmalloc': tcmalloc_install_dir + '/lib/libtcmalloc.so',
+    'jemalloc': jemalloc_install_dir + '/lib/libjemalloc.so'
+}
+
+benchmark_util = {
+    'system_default': internal_benchmark_util,
+    'glibc': glibc_install_dir + '/lib/ld-linux-x86-64.so.2 --library-path ' + glibc_install_dir + '/lib ' + internal_benchmark_util,
+    'tcmalloc': internal_benchmark_util,
+    'jemalloc': internal_benchmark_util
+}
 
 required_libs= [ 'libstdc++.so.6', 'libgcc_s.so.1' ]
 required_libs_fullpaths = []
@@ -35,14 +44,19 @@ def find(name, paths):
     
     
 def check_requirements():
-    global required_libs_fullpaths
+    global required_libs_fullpaths, impl_preload_libs, benchmark_util
     
-    if not os.path.isfile(benchmark_util):
-        print("Could not find required benchmarking utility {}".format(benchmark_util))
+#     for util in benchmark_util.values():
+#         if not os.path.isfile(util):
+#             print("Could not find required benchmarking utility {}".format(util))
+#             sys.exit(2)
+#         print("Found required benchmarking utility {}".format(util))
+    if not os.path.isfile(internal_benchmark_util):
+        print("Could not find required benchmarking utility {}".format(internal_benchmark_util))
         sys.exit(2)
-    print("Found required benchmarking utility {}".format(benchmark_util))
+    print("Found required benchmarking utility {}".format(internal_benchmark_util))
 
-    for preloadlib in impl_preload_libs:
+    for preloadlib in impl_preload_libs.values():
         if len(preloadlib)>0:
             if not os.path.isfile(preloadlib):
                 print("Could not find required lib {}".format(preloadlib))
@@ -56,8 +70,12 @@ def check_requirements():
             sys.exit(2)
         required_libs_fullpaths.append(full_path)
 
-def run_benchmark(outfile,thread_values,impl_idx):
+def run_benchmark(outfile,thread_values,impl_name):
     global required_libs_fullpaths, impl_preload_libs
+    
+    if impl_name not in impl_preload_libs:
+        print("Unknown settings required for testing implementation {}".format(impl_name))
+        sys.exit(3)
     
     of = open(outfile, 'w')
     of.write('[')
@@ -68,16 +86,24 @@ def run_benchmark(outfile,thread_values,impl_idx):
     for nthreads in thread_values:
 
         try:
-            os.environ["LD_PRELOAD"] = impl_preload_libs[impl_idx]
+            os.environ["LD_PRELOAD"] = impl_preload_libs[impl_name]
             if len(os.environ["LD_PRELOAD"])>0:
                 # the tcmalloc/jemalloc shared libs require in turn C++ libs:
                 #print "required_libs_fullpaths is:", required_libs_fullpaths
                 for lib in required_libs_fullpaths:
                     os.environ["LD_PRELOAD"] = os.environ["LD_PRELOAD"] + ':' + lib
                     
+            utility_fname = benchmark_util[impl_name]
+                    
+                    
             # run the external benchmark utility with the LD_PRELOAD trick
-            print("Running benchmark for nthreads={} with LD_PRELOAD='{}'".format(nthreads,os.environ["LD_PRELOAD"]))
-            stdout = subprocess.check_output([benchmark_util, nthreads])
+            print("Running for nthreads={}:\n   LD_PRELOAD='{}' {} {}".format(nthreads,os.environ["LD_PRELOAD"],utility_fname,nthreads))
+            
+            # the subprocess.check_output() method does not seem to work fine when launching
+            # the ld-linux-x86-64.so.2 with --library-path
+            #stdout = subprocess.check_output([utility_fname, nthreads])
+            os.system("{} {} >/tmp/benchmark-output".format(utility_fname,nthreads))
+            stdout = open('/tmp/benchmark-output', 'r').read()
 
             # produce valid JSON output:
             of.write(stdout)
@@ -88,30 +114,37 @@ def run_benchmark(outfile,thread_values,impl_idx):
         except OSError as ex:
             print("Failed running malloc benchmarking utility: {}. Skipping.".format(ex))
 
-    of.write(']')
+    of.write(']\n')
     return success
 
 def main(args):
     """Program Entry Point
     """
     if len(args) < 2:
-        print('Usage: %s <output filename postfix> <num threads test1> <num threads test2> ...' % sys.argv[0])
+        print('Usage: %s <implementation-list> <output filename postfix> <num threads test1> <num threads test2> ...' % sys.argv[0])
         sys.exit(os.EX_USAGE)
 
     # parse args
-    outfile_path_prefix,outfile_postfix = os.path.split(args[0])
-    thread_values = args[1:]
+    implementations = args[0].split()
+    outfile_path_prefix,outfile_postfix = os.path.split(args[1])
+    thread_values = args[2:]
     
     check_requirements()
     
     success = 0
     for idx in range(0,len(implementations)):
+        if implementations[idx] not in impl_preload_libs:
+            print("Unknown settings required for testing implementation '{}'".format(implementations[idx]))
+            sys.exit(3)
+            
         outfile = os.path.join(outfile_path_prefix, implementations[idx] + '-' + outfile_postfix)
+        print "----------------------------------------------------------------------------------------------"
         print "Testing implementation '{}'. Saving results into '{}'".format(implementations[idx],outfile)
         
         print "Will run tests for {} different number of threads".format(len(thread_values))
-        success = success + run_benchmark(outfile,thread_values,idx)
+        success = success + run_benchmark(outfile,thread_values,implementations[idx])
 
+    print "----------------------------------------------------------------------------------------------"
     return success
 
 if __name__ == '__main__':
