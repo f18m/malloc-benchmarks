@@ -119,14 +119,13 @@ endif
 #  1) building in source dir is not supported... that's why we build in separate folder
 #  2) building only benchmark utilities is not supported... that's why we build everything
 #
-$(glibc_build_dir)/benchtests/bench-malloc-thread:
+$(glibc_install_dir)/lib/libc.so.6:
 	@echo "Building GNU libc... go get a cup of coffee... this will take time!"
 	mkdir -p $(glibc_build_dir)
 	cd $(glibc_build_dir) && \
 		../glibc/configure --prefix=$(glibc_install_dir) && \
 		make $(parallel_flags) && \
-		make install && \
-		make $(parallel_flags) bench BENCHSET=malloc-thread
+		make install
 	[ -x $(glibc_build_dir)/benchtests/bench-malloc-thread ] && echo "GNU libc benchmarking utility is ready!" || echo "Cannot find GNU libc benchmarking utility! Cannot collect benchmark results"
 
 $(tcmalloc_install_dir)/lib/libtcmalloc.so:
