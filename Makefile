@@ -145,7 +145,7 @@ $(jemalloc_install_dir)/lib/libjemalloc.so:
 build:
 	$(MAKE) -C benchmark-src
 ifeq ($(findstring glibc,$(implem_list)),glibc)
-	$(MAKE) $(glibc_build_dir)/benchtests/bench-malloc-thread
+	$(MAKE) $(glibc_install_dir)/lib/libc.so.6
 endif
 ifeq ($(findstring tcmalloc,$(implem_list)),tcmalloc)
 	$(MAKE) $(tcmalloc_install_dir)/lib/libtcmalloc.so
