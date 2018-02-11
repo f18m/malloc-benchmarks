@@ -3,10 +3,10 @@
  "functions": {
   "malloc": {
    "": {
-    "duration": 1.91891e+10,
-    "iterations": 3.60917e+08,
-    "time_per_iteration": 53.1676,
-    "max_rss": 9456,
+    "duration": 1.76e+11,
+    "iterations": 2.30692e+09,
+    "time_per_iteration": 76.292,
+    "max_rss": 9488,
     "threads": 1,
     "min_size": 4,
     "max_size": 32768,
@@ -19,10 +19,10 @@
  "functions": {
   "malloc": {
    "": {
-    "duration": 3.83602e+10,
-    "iterations": 6.95821e+08,
-    "time_per_iteration": 55.1294,
-    "max_rss": 15100,
+    "duration": 3.51997e+11,
+    "iterations": 4.44552e+09,
+    "time_per_iteration": 79.1801,
+    "max_rss": 14896,
     "threads": 2,
     "min_size": 4,
     "max_size": 32768,
@@ -35,10 +35,10 @@
  "functions": {
   "malloc": {
    "": {
-    "duration": 7.66356e+10,
-    "iterations": 1.25981e+09,
-    "time_per_iteration": 60.831,
-    "max_rss": 19164,
+    "duration": 7.03992e+11,
+    "iterations": 7.85178e+09,
+    "time_per_iteration": 89.6601,
+    "max_rss": 18952,
     "threads": 4,
     "min_size": 4,
     "max_size": 32768,
@@ -51,10 +51,10 @@
  "functions": {
   "malloc": {
    "": {
-    "duration": 1.53507e+11,
-    "iterations": 1.28369e+09,
-    "time_per_iteration": 119.583,
-    "max_rss": 28064,
+    "duration": 1.40786e+12,
+    "iterations": 1.00863e+10,
+    "time_per_iteration": 139.581,
+    "max_rss": 33352,
     "threads": 8,
     "min_size": 4,
     "max_size": 32768,
@@ -67,10 +67,10 @@
  "functions": {
   "malloc": {
    "": {
-    "duration": 3.06127e+11,
-    "iterations": 1.25456e+09,
-    "time_per_iteration": 244.011,
-    "max_rss": 54588,
+    "duration": 2.81584e+12,
+    "iterations": 1.00018e+10,
+    "time_per_iteration": 281.535,
+    "max_rss": 54564,
     "threads": 16,
     "min_size": 4,
     "max_size": 32768,
