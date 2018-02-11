@@ -165,7 +165,7 @@ collect_results:
 	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
 
 plot_results:
-	./bench_plot_results.py $(results_dir)/$(benchmark_result_png) $(results_dir)/*$(benchmark_result_json)
+	./bench_plot_results.py $(results_dir)/$(benchmark_result_png) $(results_dir)/*.json
 
 # the following target is mostly useful only to the maintainer of the github project:
 upload_results:
