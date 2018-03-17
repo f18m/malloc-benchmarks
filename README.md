@@ -52,7 +52,7 @@ Of course the closer the curves are to zero, the better they are (the lower the 
 <tr>
 <td>
 
-![](results/2018-02-11-desktop-corei5/results.png "Malloc speed measured on 4-core Intel Core i5 CPU")
+![](results/2018-03-17-desktop-corei5/results.png "Malloc speed measured on 4-core Intel Core i5 CPU")
 
 </td>
 <td>
@@ -94,7 +94,7 @@ Relevant HW information of machine used for testing available [here](results/201
 <tr>
 <td>
 
-![](results/2018-02-11-server-xeon2680/results.png "Malloc speed measured on 40-core dual-CPU Intel Xeon 2680 CPU")
+![](results/2018-03-17-server-xeon2680/results.png "Malloc speed measured on 40-core dual-CPU Intel Xeon 2680 CPU")
 
 </td>
 <td>
@@ -105,7 +105,7 @@ Benchmarking obtained running:
 make IMPLEMENTATIONS="system_default tcmalloc jemalloc" POSTFIX="server-xeon2680" NTHREADS="1 2 4 8 16 32 40" collect_results
 ```
 
-Relevant HW information of machine used for testing available [here](results/2018-02-11-server-xeon2680/hardware-inventory.txt)
+Relevant HW information of machine used for testing available [here](results/2018-03-17-server-xeon2680/hardware-inventory.txt)
 
 'system_default' is GNU libc version 2.17 (default for Centos 7)
 
@@ -121,4 +121,10 @@ Relevant HW information of machine used for testing available [here](results/201
 </tbody>
 </table>
 
+
+## Contribute your own benchmarks
+
+If you would like to contribute your benchmarks running on different hardware please
+contact me at francesco DOT montorsi AT gmail DOT com.
+Thanks.
 
