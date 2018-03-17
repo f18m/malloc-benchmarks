@@ -116,3 +116,9 @@ Relevant HW information of machine used for testing available [here](results/201
 </table>
 
 
+## Contribute your own benchmarks
+
+If you would like to contribute your benchmarks running on different hardware please
+contact me at francesco DOT montorsi AT gmail DOT com.
+Thanks.
+
