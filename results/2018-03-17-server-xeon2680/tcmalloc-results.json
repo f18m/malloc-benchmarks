@@ -1,0 +1,113 @@
+[{
+ "timing_type": "hp_timing",
+ "functions": {
+  "malloc": {
+   "": {
+    "duration": 1.67589e+11,
+    "iterations": 5.76821e+09,
+    "time_per_iteration": 29.0539,
+    "max_rss": 9472,
+    "threads": 1,
+    "min_size": 4,
+    "max_size": 32768,
+    "random_seed": 88
+   }
+  }
+ }
+},{
+ "timing_type": "hp_timing",
+ "functions": {
+  "malloc": {
+   "": {
+    "duration": 3.35178e+11,
+    "iterations": 2.05454e+09,
+    "time_per_iteration": 163.14,
+    "max_rss": 8476,
+    "threads": 2,
+    "min_size": 4,
+    "max_size": 32768,
+    "random_seed": 88
+   }
+  }
+ }
+},{
+ "timing_type": "hp_timing",
+ "functions": {
+  "malloc": {
+   "": {
+    "duration": 6.70356e+11,
+    "iterations": 4.25395e+09,
+    "time_per_iteration": 157.584,
+    "max_rss": 7828,
+    "threads": 4,
+    "min_size": 4,
+    "max_size": 32768,
+    "random_seed": 88
+   }
+  }
+ }
+},{
+ "timing_type": "hp_timing",
+ "functions": {
+  "malloc": {
+   "": {
+    "duration": 1.34071e+12,
+    "iterations": 8.139e+09,
+    "time_per_iteration": 164.727,
+    "max_rss": 11276,
+    "threads": 8,
+    "min_size": 4,
+    "max_size": 32768,
+    "random_seed": 88
+   }
+  }
+ }
+},{
+ "timing_type": "hp_timing",
+ "functions": {
+  "malloc": {
+   "": {
+    "duration": 2.68141e+12,
+    "iterations": 2.25797e+10,
+    "time_per_iteration": 118.754,
+    "max_rss": 10332,
+    "threads": 16,
+    "min_size": 4,
+    "max_size": 32768,
+    "random_seed": 88
+   }
+  }
+ }
+},{
+ "timing_type": "hp_timing",
+ "functions": {
+  "malloc": {
+   "": {
+    "duration": 5.3628e+12,
+    "iterations": 5.09283e+10,
+    "time_per_iteration": 105.301,
+    "max_rss": 13320,
+    "threads": 32,
+    "min_size": 4,
+    "max_size": 32768,
+    "random_seed": 88
+   }
+  }
+ }
+},{
+ "timing_type": "hp_timing",
+ "functions": {
+  "malloc": {
+   "": {
+    "duration": 6.70346e+12,
+    "iterations": 6.15451e+10,
+    "time_per_iteration": 108.92,
+    "max_rss": 17060,
+    "threads": 40,
+    "min_size": 4,
+    "max_size": 32768,
+    "random_seed": 88
+   }
+  }
+ }
+}]

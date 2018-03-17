@@ -44,7 +44,7 @@ benchmark_util = {
 def find(name, paths):
     for path in paths:
         #print "Searching into: ", path
-        for root, dirs, files in os.walk(path, followlinks=True):
+        for root, dirs, files in os.walk(path, followlinks=False):
             if name in files:
                 return os.path.join(root, name)
     return ""

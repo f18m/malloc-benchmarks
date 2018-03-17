@@ -94,12 +94,12 @@ Relevant HW information of machine used for testing available [here](results/201
 <tr>
 <td>
 
-![](results/2018-02-11-server-xeon2680/results.png "Malloc speed measured on 40-core dual-CPU Intel Xeon 2680 CPU")
+![](results/2018-03-17-server-xeon2680/results.png "Malloc speed measured on 40-core dual-CPU Intel Xeon 2680 CPU")
 
 </td>
 <td>
 
-Relevant HW information of machine used for testing available [here](results/2018-02-11-server-xeon2680/hardware-inventory.txt)
+Relevant HW information of machine used for testing available [here](results/2018-03-17-server-xeon2680/hardware-inventory.txt)
 
 'system_default' is GNU libc version 2.17 (default for Centos 7)
 

@@ -1,0 +1,49 @@
+H/W path              Device     Class          Description
+===========================================================
+/0/0                             memory         64KiB BIOS
+/0/4                             processor      Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz
+/0/4/5                           memory         640KiB L1 cache
+/0/4/6                           memory         2560KiB L2 cache
+/0/4/7                           memory         25MiB L3 cache
+/0/6                             processor      Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz
+/0/6/9                           memory         640KiB L1 cache
+/0/6/a                           memory         2560KiB L2 cache
+/0/6/b                           memory         25MiB L3 cache
+/0/3e                            memory         192GiB System Memory
+/0/3e/0                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/1                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/2                          memory         DIMM Synchronous [empty]
+/0/3e/3                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/4                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/5                          memory         DIMM Synchronous [empty]
+/0/3e/6                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/7                          memory         DIMM Synchronous [empty]
+/0/3e/8                          memory         DIMM Synchronous [empty]
+/0/3e/9                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/a                          memory         DIMM Synchronous [empty]
+/0/3e/b                          memory         DIMM Synchronous [empty]
+/0/3e/c                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/d                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/e                          memory         DIMM Synchronous [empty]
+/0/3e/f                          memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/10                         memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/11                         memory         DIMM Synchronous [empty]
+/0/3e/12                         memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/13                         memory         DIMM Synchronous [empty]
+/0/3e/14                         memory         DIMM Synchronous [empty]
+/0/3e/15                         memory         16GiB DIMM DDR3 Synchronous 1600 MHz (0,6 ns)
+/0/3e/16                         memory         DIMM Synchronous [empty]
+/0/3e/17                         memory         DIMM Synchronous [empty]
+Number of CPU cores: 40
+NUMA informations:
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 20 21 22 23 24 25 26 27 28 29
+node 0 size: 98225 MB
+node 0 free: 37112 MB
+node 1 cpus: 10 11 12 13 14 15 16 17 18 19 30 31 32 33 34 35 36 37 38 39
+node 1 size: 98304 MB
+node 1 free: 51857 MB
+node distances:
+node   0   1 
+  0:  10  21 
+  1:  21  10 
