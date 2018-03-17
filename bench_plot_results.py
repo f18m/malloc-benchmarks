@@ -10,7 +10,7 @@ import matplotlib.pyplot as plotlib
 
 BenchmarkPoint = collections.namedtuple('BenchmarkPoint', ['threads', 'time_per_iteration'], verbose=False)
 filled_markers = ('o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X')
-colours = ('r', 'g', 'b', 'black')
+colours = ('r', 'g', 'b', 'black', 'yellow', 'purple')
 
 def plot_graphs(outfilename, benchmark_dict):
     """Plots the given dictionary of benchmark results
