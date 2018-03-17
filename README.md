@@ -102,7 +102,7 @@ Relevant HW information of machine used for testing available [here](results/201
 Benchmarking obtained running:
 
 <pre>
-make IMPLEMENTATIONS="system_default tcmalloc jemalloc" POSTFIX="server-xeon2680" NTHREADS="1 2 4 8 16 32 40" collect_results
+make IMPLEMENTATIONS=&quot;system_default tcmalloc jemalloc&quot; POSTFIX=&quot;server-xeon2680&quot; NTHREADS=&quot;1 2 4 8 16 32 40&quot; collect_results
 </pre>
 
 Relevant HW information of machine used for testing available [here](results/2018-03-17-server-xeon2680/hardware-inventory.txt)
