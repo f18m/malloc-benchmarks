@@ -41,5 +41,77 @@ On the other machine where you want to plot results:
 
 ## Example benchmarks
 
-![Example graph](results/2018-02-08/desktop-corei5-results.png "Example results obtained on 4-core Intel Core i5 CPU")
+The following are some pictures obtained on different HW systems using however the same benchmarking utility written by
+GNU libc developers. They give an idea on how much performances can be different on different CPU/memory HW and varying the number of threads.
+
+<table cellpadding="5" width="100%">
+<tbody>
+
+
+<tr>
+<td>
+
+![](results/2018-02-11-desktop-corei5/results.png "Malloc speed measured on 4-core Intel Core i5 CPU")
+
+</td>
+<td>
+
+Relevant HW information of machine used for testing available [here](results/2018-02-11-desktop-corei5/hardware-inventory.txt)
+
+'system_default' is GNU libc version 2.23 (default for Ubuntu 16.04 LTS)
+
+'glibc' is GNU libc version 2.26
+
+'tcmalloc' is Google gperftools version 2.6.3
+
+'jemalloc' is Google gperftools version 5.0.1
+</td>
+</tr>
+
+
+<tr>
+<td>
+
+![](results/2018-02-11-desktop-xeon3470/results.png "Malloc speed measured on 8-core Intel Xeon 3470 CPU")
+
+</td>
+<td>
+
+Relevant HW information of machine used for testing available [here](results/2018-02-11-desktop-xeon3470/hardware-inventory.txt)
+
+'system_default' is GNU libc version 2.23 (default for Ubuntu 16.04 LTS)
+
+'glibc' is GNU libc version 2.26
+
+'tcmalloc' is Google gperftools version 2.6.3
+
+'jemalloc' is Google gperftools version 5.0.1
+</td>
+</tr>
+
+
+<tr>
+<td>
+
+![](results/2018-02-11-server-xeon2680/results.png "Malloc speed measured on 40-core dual-CPU Intel Xeon 2680 CPU")
+
+</td>
+<td>
+
+Relevant HW information of machine used for testing available [here](results/2018-02-11-server-xeon2680/hardware-inventory.txt)
+
+'system_default' is GNU libc version 2.17 (default for Centos 7)
+
+'glibc' curve is missing: the default GCC of Centos 7 is too old to build a recent GNU libc version.
+
+'tcmalloc' is Google gperftools version 2.6.3
+
+'jemalloc' is Google gperftools version 5.0.1
+</td>
+</tr>
+
+
+</tbody>
+</table>
+
 

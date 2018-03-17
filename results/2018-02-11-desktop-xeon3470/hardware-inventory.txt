@@ -1,0 +1,13 @@
+H/W path         Device      Class       Description
+====================================================
+/0/0                         memory      64KiB BIOS
+/0/4                         processor   Intel(R) Xeon(R) CPU           X3470  @ 2.93GHz
+/0/4/5                       memory      256KiB L1 cache
+/0/4/6                       memory      1MiB L2 cache
+/0/4/7                       memory      8MiB L3 cache
+/0/2a                        memory      32GiB System Memory
+/0/2a/0                      memory      8GiB DIMM DDR3 Synchronous 1333 MHz (0,8 ns)
+/0/2a/1                      memory      8GiB DIMM DDR3 Synchronous 1333 MHz (0,8 ns)
+/0/2a/2                      memory      8GiB DIMM DDR3 Synchronous 1333 MHz (0,8 ns)
+/0/2a/3                      memory      8GiB DIMM DDR3 Synchronous 1333 MHz (0,8 ns)
+Number of CPU cores: 8
