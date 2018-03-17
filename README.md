@@ -52,7 +52,7 @@ Of course the closer the curves are to zero, the better they are (the lower the 
 <tr>
 <td>
 
-![](results/2018-03-17-desktop-corei5/results.png "Malloc speed measured on 4-core Intel Core i5 CPU")
+![](results/2018-02-11-desktop-corei5/results.png "Malloc speed measured on 4-core Intel Core i5 CPU")
 
 </td>
 <td>
