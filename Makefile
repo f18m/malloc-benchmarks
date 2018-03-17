@@ -39,8 +39,8 @@ else
 parallel_flags := -j4 
 endif
 
-ifdef PREFIX
-benchmark_postfix := $(PREFIX)
+ifdef POSTFIX
+benchmark_postfix := $(POSTFIX)
 else
 # default value
 benchmark_postfix := $(shell hostname)
@@ -163,6 +163,8 @@ collect_results:
 	@sudo lshw -short -class memory -class processor	> $(results_dir)/hardware-inventory.txt
 	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt
 	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
+	@(which numactl >/dev/null 2>&1) && echo "NUMA informations:" >>$(results_dir)/hardware-inventory.txt
+	@(which numactl >/dev/null 2>&1) && numactl -H >>$(results_dir)/hardware-inventory.txt
 
 plot_results:
 	./bench_plot_results.py $(results_dir)/$(benchmark_result_png) $(results_dir)/*.json
