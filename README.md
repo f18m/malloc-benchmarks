@@ -43,6 +43,7 @@ On the other machine where you want to plot results:
 
 The following are some pictures obtained on different HW systems using however the same benchmarking utility written by
 GNU libc developers. They give an idea on how much performances can be different on different CPU/memory HW and varying the number of threads.
+Of course the closer the curves are to zero, the better they are (the lower the better!).
 
 <table cellpadding="5" width="100%">
 <tbody>
