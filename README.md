@@ -99,6 +99,12 @@ Relevant HW information of machine used for testing available [here](results/201
 </td>
 <td>
 
+Benchmarking obtained running:
+
+```
+make IMPLEMENTATIONS="system_default tcmalloc jemalloc" POSTFIX="server-xeon2680" NTHREADS="1 2 4 8 16 32 40" collect_results
+```
+
 Relevant HW information of machine used for testing available [here](results/2018-02-11-server-xeon2680/hardware-inventory.txt)
 
 'system_default' is GNU libc version 2.17 (default for Centos 7)
