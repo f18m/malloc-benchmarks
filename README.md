@@ -76,7 +76,7 @@ GNU libc developers. They give an idea of how much performance can differ on dif
 Of course, the closer the curves are to zero, the better they are (the lower the better!).
 
 **To verify the version numbers for your benchmarks, look in the following places after running `make`:**
-1. **system_default:** run `apt show libc6` to see your system glibc version. Ex: `Version: 2.31-0ubuntu9.2`
+1. **system_default:** run `apt show libc6` to see your system glibc version ([source: "Determining the Installed glibc Version"](https://www.linode.com/docs/guides/patching-glibc-for-the-ghost-vulnerability/)). Ex: `Version: 2.31-0ubuntu9.2`
 1. **glibc:** See this file: `malloc-benchmarks/glibc/version.h`
 1. **tcmalloc:** See the `TC_VERSION_STRING` value inside `malloc-benchmarks/tcmalloc-install/include/gperftools/tcmalloc.h`
 1. **jemalloc:** See the `JEMALLOC_VERSION` value inside `malloc-benchmarks/jemalloc-install/include/jemalloc/jemalloc.h`
