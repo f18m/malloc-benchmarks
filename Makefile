@@ -163,6 +163,7 @@ collect_results:
 	@sudo lshw -short -class memory -class processor	> $(results_dir)/hardware-inventory.txt
 	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt
 	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
+	# NB: you may need to install `numactl` first with `sudo apt install numactl`.
 	@(which numactl >/dev/null 2>&1) && echo "NUMA informations:" >>$(results_dir)/hardware-inventory.txt
 	@(which numactl >/dev/null 2>&1) && numactl -H >>$(results_dir)/hardware-inventory.txt
 

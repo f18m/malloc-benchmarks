@@ -1,20 +1,50 @@
 # malloc-benchmarks
 
-Simple benchmarking scripts to run on any machine to compare different C/C++ malloc implementations.
-The scripts are not meant to face any possible problem, quite the opposite.
+Simple benchmarking and plotting scripts to run on any machine to compare different C/C++ malloc implementations.
+The scripts are not meant to face any possible problem; quite the opposite.
 They will:
  - download and build [GNU libc](https://www.gnu.org/software/libc/), [Google perftools](https://github.com/gperftools/gperftools), [Jemalloc](http://jemalloc.net/)
- - use GNU libc malloc multi-thread benchmarking utility to generate JSON results for different combinations
-   of malloc implementation and number of threads
- - use [Python matplotlib](https://matplotlib.org/) to produce a summary figure
+ - use the GNU libc malloc multi-threaded benchmarking utility to generate JSON results for different combinations
+   of malloc implementations and numbers of threads
+ - use [Python matplotlib](https://matplotlib.org/) to produce a plot of the results
+
+
+## Dependencies
+
+If `make` below fails, you may need to install (via `sudo apt install`) one or more of the following. If you like, just begin by running the installation commands below. Last tested in Ubuntu 20.04.
+
+```bash
+sudo apt update && sudo apt install \
+   numactl g++ clang llvm-dev unzip dos2unix linuxinfo bc libgmp-dev wget \
+   cmake python python3 ruby ninja-build libtool autoconf
+# For Python
+pip3 install matplotlib
+```
 
 
 ## How to collect benchmark results and view them
 
+```bash
+git clone https://github.com/f18m/malloc-benchmarks.git
+cd malloc-benchmarks
+make
+# OR, time the process too to help you set expectations for how long it will take
+time make 
 ```
-   git clone https://github.com/f18m/malloc-benchmarks.git
-   cd malloc-benchmarks
-   make
+
+Once you have run `make`, the plot will display. To re-plot the results without rerunning the tests, run:
+```bash
+make plot_results
+```
+
+Note that each time you run `make`, all of the benchmark results will be stored in a folder for your computer within the `results` dir, overwriting all previous results. So, if you wish to save previous benchmarking runs, be sure to rename your computer's folder in the `results` dir prior to running `make` again. 
+
+You can customize the runs be setting environment variables as you call `make`. See the top of the `Makefile` for details. See the default values for `benchmark_nthreads` and `implem_list` in the `Makefile`.  
+
+Examples:
+```bash
+# Run only 1 and 2 threads, testing only malloc implementations jemalloc and tcmalloc:
+NTHREADS="1 2" IMPLEMENTATIONS="jemalloc tcmalloc" make
 ```
 
 
@@ -22,28 +52,32 @@ They will:
 
 On the machine where you want to collect benchmark results:
 
-```
-   git clone https://github.com/f18m/malloc-benchmarks.git
-   cd malloc-benchmarks
-   make download build collect_results 
-   scp -r results IP_OF_OTHER_MACHINE:
+```bash
+git clone https://github.com/f18m/malloc-benchmarks.git
+cd malloc-benchmarks
+make download build collect_results 
+scp -r results IP_OF_OTHER_MACHINE:
 ```
 
 On the other machine where you want to plot results:
 
-```
-   git clone https://github.com/f18m/malloc-benchmarks.git
-   cd malloc-benchmarks
-   mv ../results .
-   make plot_results
+```bash
+git clone https://github.com/f18m/malloc-benchmarks.git
+cd malloc-benchmarks
+mv ../results .
+make plot_results
 ```
 
 
 ## Example benchmarks
 
-The following are some pictures obtained on different HW systems using however the same benchmarking utility written by
-GNU libc developers. They give an idea on how much performances can be different on different CPU/memory HW and varying the number of threads.
-Of course the closer the curves are to zero, the better they are (the lower the better!).
+The following are some plots of results obtained on different hardware systems using the same benchmarking utility written by the
+GNU libc developers. They give an idea of how much performance can differ on different CPU/memory hardware and a varying the number of threads.
+Of course, the closer the curves are to zero, the better they are (the lower the better!).
+
+### To verify the version numbers for your benchmarks, look in the following places:
+1. 
+
 
 <table cellpadding="5" width="100%">
 <tbody>
