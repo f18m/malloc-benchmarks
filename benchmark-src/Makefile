@@ -1,7 +1,7 @@
 TARGET = bench-malloc-thread
 LIBS = -lpthread
 CC = gcc
-CFLAGS = -g -Wall -O2 -std=gnu99
+CFLAGS = -g -Wall -O2 -std=gnu99 -I. -include libc-symbols.h
 
 .PHONY: default all clean
 

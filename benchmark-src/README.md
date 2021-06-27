@@ -46,4 +46,13 @@ glibc$ find | grep _itoa\.h
 
 glibc/benchtests/json-lib.h # <=== this one
 glibc/benchtests/json-lib.c # <=== this one
+
+glibc$ find | grep isa\.h
+./sysdeps/x86_64/isa.h # <=== this one
+./sysdeps/i386/i586/isa.h
+./sysdeps/i386/i686/isa.h
+./sysdeps/i386/isa.h
+./sysdeps/x86/tst-ifunc-isa.h
+
+glibc/include/libc-symbols.h # <=== this one
 ```
