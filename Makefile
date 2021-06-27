@@ -40,8 +40,8 @@ endif
 ifdef NUMPROC
 parallel_flags := -j$(NUMPROC)
 else
-# default value
-parallel_flags := -j4 
+# default value: pull from the max number of hardware processes: `nproc` cmd output; ex: 8
+parallel_flags := -j$(nproc)
 endif
 
 ifdef POSTFIX
@@ -131,6 +131,7 @@ $(glibc_install_dir)/lib/libc.so.6:
 	cd $(glibc_build_dir) && \
 		../glibc/configure --prefix=$(glibc_install_dir) && \
 		make $(parallel_flags) && \
+		make bench-build $(parallel_flags) && \
 		make install
 	[ -x $(glibc_build_dir)/benchtests/bench-malloc-thread ] && echo "GNU libc benchmarking utility is ready!" || echo "Cannot find GNU libc benchmarking utility! Cannot collect benchmark results"
 
@@ -149,7 +150,6 @@ $(jemalloc_install_dir)/lib/libjemalloc.so:
 		( make install || true )
 		
 build:
-	$(MAKE) -C benchmark-src
 ifeq ($(findstring glibc,$(implem_list)),glibc)
 	$(MAKE) $(glibc_install_dir)/lib/libc.so.6
 endif

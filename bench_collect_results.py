@@ -11,7 +11,7 @@ import subprocess
 # Constants
 #
 
-internal_benchmark_util = 'benchmark-src/bench-malloc-thread'
+internal_benchmark_util = 'glibc-build/benchtests/bench-malloc-thread'
 
 glibc_install_dir = 'glibc-install'
 tcmalloc_install_dir = 'tcmalloc-install'
