@@ -1,17 +1,22 @@
 #
 # This makefile will build a small benchmarking utility for 'malloc' implementations and will
-# run it with different implementations saving results into JSON files.
+# run it with different implementations, first saving results into JSON files, and then plotting
+# them graphically.
 #
-# Specifically this makefile downloads, configure and compiles 3 different software packages:
-#  - GNU libc
-#  - Google perftools (tcmalloc)
-#  - jemalloc
+# Specifically, this makefile downloads, configures and compiles these different software packages:
+# 1. GNU libc
+# 2. Google perftools (tcmalloc)
+# 3. jemalloc
 #
-# Tested with versions:
-#  - GNU libc 2.26
-#  - Google perftools (tcmalloc) 2.6.3
-#  - jemalloc 5.0.1
+# First tested with these versions:
+# 1. GNU libc 2.26
+# 2. Google perftools (tcmalloc) 2.6.3
+# 3. jemalloc 5.0.1
 #
+# Most-recently tested on Ubuntu 20.04 with these versions:
+# 1. GNU libc 2.31
+# 2. Google perftools (tcmalloc) 2.9.1
+# 3. jemalloc 5.2.1-742
 #
 
 #
@@ -76,6 +81,7 @@ glibc_url := git://sourceware.org/git/glibc.git
 tcmalloc_url := https://github.com/gperftools/gperftools.git
 jemalloc_url := https://github.com/jemalloc/jemalloc.git
 
+# Alternate download version and source if not using the git repo above
 glibc_version := 2.26
 glibc_alt_wget_url := https://ftpmirror.gnu.org/libc/glibc-$(glibc_version).tar.xz
 
@@ -163,6 +169,7 @@ collect_results:
 	@sudo lshw -short -class memory -class processor	> $(results_dir)/hardware-inventory.txt
 	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt
 	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
+	# NB: you may need to install `numactl` first with `sudo apt install numactl`.
 	@(which numactl >/dev/null 2>&1) && echo "NUMA informations:" >>$(results_dir)/hardware-inventory.txt
 	@(which numactl >/dev/null 2>&1) && numactl -H >>$(results_dir)/hardware-inventory.txt
 
@@ -173,5 +180,5 @@ plot_results:
 upload_results:
 	git add -f $(results_dir)/*$(benchmark_result_json) $(results_dir)/$(benchmark_result_png) $(results_dir)/hardware-inventory.txt
 	git commit -m "Adding results from folder $(results_dir) to the GIT repository"
-	@echo "Run 'git push' to push online your results (required GIT repo write access)"
+	@echo "Run 'git push' to push online your results (requires GIT repo write access)"
 

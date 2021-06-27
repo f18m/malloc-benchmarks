@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Generate benchmarking results in JSON form, using GNU libc benchmarking utility;
 different allocators are injected into that utility by using LD_PRELOAD trick.
 """
@@ -43,7 +43,7 @@ benchmark_util = {
 
 def find(name, paths):
     for path in paths:
-        #print "Searching into: ", path
+        #print("Searching into: ", path)
         for root, dirs, files in os.walk(path, followlinks=False):
             if name in files:
                 return os.path.join(root, name)
@@ -107,7 +107,7 @@ def run_benchmark(outfile,thread_values,impl_name):
             os.environ["LD_PRELOAD"] = impl_preload_libs[impl_name]
             if len(os.environ["LD_PRELOAD"])>0:
                 # the tcmalloc/jemalloc shared libs require in turn C++ libs:
-                #print "preload_required_libs_fullpaths is:", preload_required_libs_fullpaths
+                #print("preload_required_libs_fullpaths is:", preload_required_libs_fullpaths)
                 for lib in preload_required_libs_fullpaths:
                     os.environ["LD_PRELOAD"] = os.environ["LD_PRELOAD"] + ':' + lib
                     
@@ -156,13 +156,13 @@ def main(args):
             sys.exit(3)
             
         outfile = os.path.join(outfile_path_prefix, implementations[idx] + '-' + outfile_postfix)
-        print "----------------------------------------------------------------------------------------------"
-        print "Testing implementation '{}'. Saving results into '{}'".format(implementations[idx],outfile)
+        print("----------------------------------------------------------------------------------------------")
+        print("Testing implementation '{}'. Saving results into '{}'".format(implementations[idx],outfile))
         
-        print "Will run tests for {} different number of threads".format(len(thread_values))
+        print("Will run tests for {} different number of threads".format(len(thread_values)))
         success = success + run_benchmark(outfile,thread_values,implementations[idx])
 
-    print "----------------------------------------------------------------------------------------------"
+    print("----------------------------------------------------------------------------------------------")
     return success
 
 if __name__ == '__main__':
