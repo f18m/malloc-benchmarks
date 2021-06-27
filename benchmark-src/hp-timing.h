@@ -1,5 +1,5 @@
-/* High precision, low overhead timing functions.  x86-64 version.
-   Copyright (C) 2002-2017 Free Software Foundation, Inc.
+/* High precision, low overhead timing functions.  x86 version.
+   Copyright (C) 2018-2021 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -14,27 +14,48 @@
 
    You should have received a copy of the GNU Lesser General Public
    License along with the GNU C Library; if not, see
-   <http://www.gnu.org/licenses/>.  */
+   <https://www.gnu.org/licenses/>.  */
 
 #ifndef _HP_TIMING_H
 #define _HP_TIMING_H	1
 
-/* We always assume having the timestamp register.  */
-#define HP_TIMING_AVAIL		(1)
-#define HP_SMALL_TIMING_AVAIL	(1)
+#include <isa.h>
 
+#if MINIMUM_ISA == 686 || MINIMUM_ISA == 8664
 /* We indeed have inlined functions.  */
-#define HP_TIMING_INLINE	(1)
+# define HP_TIMING_INLINE	(1)
 
 /* We use 64bit values for the times.  */
 typedef unsigned long long int hp_timing_t;
 
-/* The "=A" constraint used in 32-bit mode does not work in 64-bit mode.  */
-#define HP_TIMING_NOW(Var) \
-  ({ unsigned int _hi, _lo; \
-     asm volatile ("rdtsc" : "=a" (_lo), "=d" (_hi)); \
-     (Var) = ((unsigned long long int) _hi << 32) | _lo; })
+/* That's quite simple.  Use the `rdtsc' instruction.  Note that the value
+   might not be 100% accurate since there might be some more instructions
+   running in this moment.  This could be changed by using a barrier like
+   'cpuid' right before the `rdtsc' instruciton.  But we are not interested
+   in accurate clock cycles here so we don't do this.
 
-#include "hp-timing-common.h"
+   NB: Use __builtin_ia32_rdtsc directly since including <x86intrin.h>
+   makes building glibc very slow.  */
+# ifdef USE_RDTSCP
+/* RDTSCP waits until all previous instructions have executed and all
+   previous loads are globally visible before reading the counter.
+   RDTSC doesn't wait until all previous instructions have been executed
+   before reading the counter.  */
+#  define HP_TIMING_NOW(Var) \
+  (__extension__ ({				\
+    unsigned int __aux;				\
+    (Var) = __builtin_ia32_rdtscp (&__aux);	\
+  }))
+# else
+#  define HP_TIMING_NOW(Var) ((Var) = __builtin_ia32_rdtsc ())
+# endif
+
+# include <hp-timing-common.h>
+#else
+/* NB: Undefine _HP_TIMING_H so that <sysdeps/generic/hp-timing.h> will
+   be included.  */
+# undef _HP_TIMING_H
+# include <sysdeps/generic/hp-timing.h>
+#endif
 
 #endif /* hp-timing.h */
