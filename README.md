@@ -1,12 +1,12 @@
 # malloc-benchmarks
 
 Simple benchmarking and plotting scripts to run on any machine to compare different C/C++ malloc implementations.
-The scripts are not meant to face any possible problem; quite the opposite.
+These scripts are not meant to face any possible problem; quite the opposite.
 They will:
- - download and build [GNU libc](https://www.gnu.org/software/libc/), [Google perftools](https://github.com/gperftools/gperftools), [Jemalloc](http://jemalloc.net/)
- - use the GNU libc malloc multi-threaded benchmarking utility to generate JSON results for different combinations
+1. Download and build [GNU libc](https://www.gnu.org/software/libc/), [Google perftools](https://github.com/gperftools/gperftools), [Jemalloc](http://jemalloc.net/)
+1. Use the GNU libc malloc multi-threaded benchmarking utility to generate JSON results for different combinations
    of malloc implementations and numbers of threads
- - use [Python matplotlib](https://matplotlib.org/) to produce a plot of the results
+1. Use [Python matplotlib](https://matplotlib.org/) to produce a plot of the results
 
 
 ## Dependencies
@@ -75,8 +75,11 @@ The following are some plots of results obtained on different hardware systems u
 GNU libc developers. They give an idea of how much performance can differ on different CPU/memory hardware and a varying the number of threads.
 Of course, the closer the curves are to zero, the better they are (the lower the better!).
 
-### To verify the version numbers for your benchmarks, look in the following places:
-1. 
+**To verify the version numbers for your benchmarks, look in the following places after running `make`:**
+1. **system_default:** run `apt show libc6` to see your system glibc version. Ex: `Version: 2.31-0ubuntu9.2`
+1. **glibc:** See this file: `malloc-benchmarks/glibc/version.h`
+1. **tcmalloc:** See the `TC_VERSION_STRING` value inside `malloc-benchmarks/tcmalloc-install/include/gperftools/tcmalloc.h`
+1. **jemalloc:** See the `JEMALLOC_VERSION` value inside `malloc-benchmarks/jemalloc-install/include/jemalloc/jemalloc.h`
 
 
 <table cellpadding="5" width="100%">
