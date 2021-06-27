@@ -1,3 +1,6 @@
+See the included glibc benchmark source code and readme here: [benchmark-src](benchmark-src)
+
+
 # malloc-benchmarks
 
 Simple benchmarking and plotting scripts to run on any machine to compare different C/C++ malloc implementations.
@@ -44,7 +47,7 @@ You can customize the runs be setting environment variables as you call `make`. 
 Examples:
 ```bash
 # Run only 1 and 2 threads, testing only malloc implementations jemalloc and tcmalloc:
-NTHREADS="1 2" IMPLEMENTATIONS="jemalloc tcmalloc" make
+NTHREADS="1 2" IMPLEMENTATIONS="jemalloc tcmalloc" time make
 ```
 
 
