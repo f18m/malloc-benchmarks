@@ -17,7 +17,8 @@ def plot_graphs(outfilename, benchmark_dict):
     """
     plotlib.clf()
     plotlib.xlabel('Number of threads')
-    plotlib.ylabel('CPU cycles per malloc op')          # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
+    # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
+    plotlib.ylabel('CPU cycles per malloc op')
 
     nmarker=0
     max_x=[]
@@ -45,13 +46,12 @@ def plot_graphs(outfilename, benchmark_dict):
     plotlib.xlim(0, max(max_x)*1.1)
     plotlib.ylim(0, max(max_y)*1.3)
 
+    outfilename_dir = os.path.dirname(outfilename)
     print("Writing plot into '%s'" % outfilename)
-    print("- - -\n" +
-          "Close the plot to terminate the program. Run `make plot_results` to plot the results\n" +
-          "again. Be sure to manually make a copy of the \"results\" folder (if you wish to\n" +
-          "save your results) before running `make` again, or else these results will be\n" +
-          "overwritten.\n" +
-          "- - -")
+    print(("- - -\n" +
+          "Close the plot to terminate the program. Run `RESULT_DIRNAME='{}' make plot_results`\n" +
+          "to plot the results again.\n" +
+          "- - -").format(outfilename_dir))
     plotlib.legend(loc='upper left')
     plotlib.savefig(outfilename)
     plotlib.show()
@@ -64,7 +64,7 @@ def main(args):
         print('Usage: %s <image-output-file> <file1> <file2> ...' % sys.argv[0])
         sys.exit(os.EX_USAGE)
 
-    bm = {}
+    bm = {} # benchmark dict
     for filepath in args[1:]:
         print("Parsing '{}'...".format(filepath))
         with open(filepath, 'r') as benchfile:

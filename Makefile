@@ -41,7 +41,7 @@ ifdef NUMPROC
 parallel_flags := -j$(NUMPROC)
 else
 # default value: pull from the max number of hardware processes: `nproc` cmd output; ex: 8
-parallel_flags := -j$(nproc)
+parallel_flags := -j$(shell nproc)
 endif
 
 ifdef POSTFIX
@@ -55,7 +55,7 @@ ifdef RESULT_DIRNAME
 results_dir := $(RESULT_DIRNAME)
 else
 # default value
-results_dir := results/$(shell date +%F)-$(benchmark_postfix)
+results_dir := results/$(shell date '+%Y.%m.%d-%H%Mhrs-%Ssec')--$(benchmark_postfix)
 endif
 
 ifdef IMPLEMENTATIONS
@@ -74,7 +74,7 @@ endif
 
 topdir=$(shell readlink -f .)
 
-benchmark_result_json := results.json
+benchmark_result_json := results.json # the suffix for the json file names
 benchmark_result_png := results.png
 
 glibc_url := git://sourceware.org/git/glibc.git
@@ -170,7 +170,7 @@ collect_results:
 	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt
 	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
 	# NB: you may need to install `numactl` first with `sudo apt install numactl`.
-	@(which numactl >/dev/null 2>&1) && echo "NUMA informations:" >>$(results_dir)/hardware-inventory.txt
+	@(which numactl >/dev/null 2>&1) && echo "NUMA information (from 'numactl -H'):" >>$(results_dir)/hardware-inventory.txt
 	@(which numactl >/dev/null 2>&1) && numactl -H >>$(results_dir)/hardware-inventory.txt
 
 plot_results:

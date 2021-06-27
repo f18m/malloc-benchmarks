@@ -35,12 +35,12 @@ make
 time make 
 ```
 
-Once you have run `make`, the plot will display. To re-plot the results without rerunning the tests, run:
+Once you have run `make`, the plot will display. To re-plot the results without rerunning the tests, run the following, specifying the correct dirname:
 ```bash
-make plot_results
+RESULT_DIRNAME='results/my_dir_name' make plot_results
 ```
 
-Note that each time you run `make`, all of the benchmark results will be stored in a folder for your computer within the `results` dir, overwriting all previous results. So, if you wish to save previous benchmarking runs, be sure to rename your computer's folder in the `results` dir prior to running `make` again. 
+Note that each time you run `make`, all of the benchmark results will be stored in a folder for your computer within the `results` dir.
 
 You can customize the runs be setting environment variables as you call `make`. See the top of the `Makefile` for details. See the default values for `benchmark_nthreads` and `implem_list` in the `Makefile`.  
 
