@@ -1,10 +1,8 @@
-# Benchmark utility sources
+# Glibc benchmark utility source code
 
-The sources collected here are a small subset of the GNU libc benchmarking utility for `malloc` implementations.
+The primary glibc malloc benchmarking utility is `glibc/benchtests/bech-malloc-thread.c`. It is automatically downloaded by this repo, then built and run when you call `make`.
 
-Please see `glibc/benchtests/bech-malloc-thread.c` for the most up-to-date source code.
-
-You can obtain it here: https://www.gnu.org/software/libc/sources.html:
+You can manually obtain the glibc source code here: https://www.gnu.org/software/libc/sources.html:
 ```bash
 git clone https://sourceware.org/git/glibc.git
 cd glibc
@@ -17,7 +15,38 @@ See also:
 1. https://kazoo.ga/a-simple-tool-to-test-malloc-performance/
 
 
-## Each of the above source files came from the following glibc paths:
+## If you ever wish to manually build glibc and its benchtests, do so as follows:
+
+References:
+1. https://www.gnu.org/software/libc/manual/html_node/Configuring-and-compiling.html
+1. This project's makefile
+1. https://stackoverflow.com/questions/10412684/how-to-compile-my-own-glibc-c-standard-library-from-source-and-use-it/68153847#68153847
+
+
+```bash
+# IMPORTANT: begin AT THE SAME DIRECTORY LEVEL as the `glibc` source code 
+# directory, NOT inside the `glibc` source code dir! In other words, if 
+# you are in the correct dir, running `ls` will show the `glibc` source
+# code dir (that you just cloned) inside the dir you are in.
+mkdir -p glibc-build
+mkdir -p glibc-install
+cd glibc-build
+../glibc/configure --prefix="$(realpath "../glibc-install")"
+time make -j8  # build with 8 threads (jobs); on a fast laptop this takes ~3 min.
+time make install # (optional: install to the `glibc-install` dir you created)
+
+# Build the benchtests (everything inside the `glibc/benchtests` dir) too
+time make bench-build -j8
+# Now you have this file you can use for malloc speed tests, for instance!: 
+#       ../glibc-build/benchtests/bench-malloc-thread
+
+# To build **and run** all glibc benchtests, do:
+time make bench
+```
+
+## If you'd like to manually extract the files you need to just build this benchtest, here are the paths of _some_ of them, to get you started:
+
+**Note: this technique is Not recommended, since it's hard to track down all of the source files needed, and build settings. Instead, just build glibc and its bench tests from the entire glibc source code as shown above.**
 
 ```bash
 glibc/benchtests/bench-malloc-simple.c # <=== this one

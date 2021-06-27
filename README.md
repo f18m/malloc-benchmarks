@@ -1,4 +1,4 @@
-See the included glibc benchmark source code and readme here: [benchmark-src](benchmark-src)
+See also more glibc source code and build info. here: [glibc-benchmark-info.md](glibc-benchmark-info.md).
 
 
 # malloc-benchmarks
