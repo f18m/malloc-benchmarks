@@ -163,15 +163,17 @@ endif
 	
 collect_results:
 	@mkdir -p $(results_dir)
-	@echo "Starting to collect performance benchmarks."
-	./bench_collect_results.py "$(implem_list)" $(results_dir)/$(benchmark_result_json) $(benchmark_nthreads)
-	@echo "Collecting hardware information in $(results_dir)/hardware-inventory.txt"
+
+	@echo "Collecting hardware information (sudo required) in $(results_dir)/hardware-inventory.txt"
 	@sudo lshw -short -class memory -class processor	> $(results_dir)/hardware-inventory.txt
 	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt
 	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
 	# NB: you may need to install `numactl` first with `sudo apt install numactl`.
 	@(which numactl >/dev/null 2>&1) && echo "NUMA information (from 'numactl -H'):" >>$(results_dir)/hardware-inventory.txt
 	@(which numactl >/dev/null 2>&1) && numactl -H >>$(results_dir)/hardware-inventory.txt
+
+	@echo "Starting to collect performance benchmarks."
+	./bench_collect_results.py "$(implem_list)" $(results_dir)/$(benchmark_result_json) $(benchmark_nthreads)
 
 plot_results:
 	./bench_plot_results.py $(results_dir)/$(benchmark_result_png) $(results_dir)/*.json

@@ -26,19 +26,22 @@ impl_preload_libs = {
     'jemalloc': jemalloc_install_dir + '/lib/libjemalloc.so'
 }
 
-# to successfully preload the tcmalloc,jemalloc libs we will also need to preload the C++ standard lib and gcc_s lib:
+# to successfully preload the tcmalloc,jemalloc libs we will also need to preload the C++ standard
+# lib and gcc_s lib:
 preload_required_libs= [ 'libstdc++.so.6', 'libgcc_s.so.1' ]
 preload_required_libs_fullpaths = []
 
 benchmark_util = {
     'system_default': internal_benchmark_util,
     
-    # to test the latest GNU libc implementation downloaded and compiled locally we use another trick:
-    # we ask the dynamic linker of the just-built GNU libc to run the benchmarking utility using new GNU libc dyn libs: 
-    'glibc': glibc_install_dir + '/lib/ld-linux-x86-64.so.2 --library-path ' + glibc_install_dir + '/lib ' + internal_benchmark_util,
+    # to test the latest GNU libc implementation downloaded and compiled locally we use another
+    # trick: we ask the dynamic linker of the just-built GNU libc to run the benchmarking utility
+    # using the new GNU libc dynamic libs:
+    'glibc': (glibc_install_dir + '/lib/ld-linux-x86-64.so.2 --library-path ' + glibc_install_dir +
+             '/lib ' + internal_benchmark_util),
     
     'tcmalloc': internal_benchmark_util,
-    'jemalloc': internal_benchmark_util
+    'jemalloc': internal_benchmark_util,
 }
 
 def find(name, paths):

@@ -68,7 +68,8 @@ On the other machine where you want to plot results:
 git clone https://github.com/f18m/malloc-benchmarks.git
 cd malloc-benchmarks
 mv ../results .
-make plot_results
+# manually specify the correct `my_dir_name` below
+RESULT_DIRNAME='results/my_dir_name' make plot_results
 ```
 
 
