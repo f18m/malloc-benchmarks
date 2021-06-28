@@ -15,17 +15,28 @@ colours = ('r', 'g', 'b', 'black', 'yellow', 'purple')
 def plot_graphs(outfilename, benchmark_dict):
     """Plots the given dictionary of benchmark results
     """
+    # print("benchmark_dict = {}".format(benchmark_dict)) #######
     plotlib.clf()
+    # main figure title
+    plotlib.suptitle("Malloc speed tests (tested w/glibc's `benchtests/bench-malloc-thread.c`)")
     plotlib.xlabel('Number of threads')
     # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
-    plotlib.ylabel('CPU cycles per malloc op')
+    plotlib.ylabel('CPU cycles per sum of (1 free + 1 malloc) op')
 
     nmarker=0
     max_x=[]
     max_y=[]
+    first_itn = True #######
     for impl_name in benchmark_dict.keys():
         current_bm = benchmark_dict[impl_name]
         
+        #############3
+        # if first_itn:
+        #     first_itn = False
+        #     # figure subtitle
+        #     plotlib.title("[min, max] num bytes per malloc = [{}, {}]".format(
+        #         current_bm[0].min_size, current_bm[0].min_size), fontsize=10)
+
         # add a line plot
         X = [ x.threads for x in current_bm ]
         Y = [ y.time_per_iteration for y in current_bm ]
@@ -64,7 +75,7 @@ def main(args):
         print('Usage: %s <image-output-file> <file1> <file2> ...' % sys.argv[0])
         sys.exit(os.EX_USAGE)
 
-    bm = {} # benchmark dict
+    benchmark_dict = {}
     for filepath in args[1:]:
         print("Parsing '{}'...".format(filepath))
         with open(filepath, 'r') as benchfile:
@@ -77,13 +88,13 @@ def main(args):
                 sys.exit(2)
             #print json.dumps(bench_list, sort_keys=True, indent=4, separators=(',', ': '))
             
-            bm[filename] = []
+            benchmark_dict[filename] = []
             for bench in bench_list:
-                bm[filename].append(BenchmarkPoint(bench['functions']['malloc']['']['threads'], bench['functions']['malloc']['']['time_per_iteration']))
+                benchmark_dict[filename].append(BenchmarkPoint(bench['functions']['malloc']['']['threads'], bench['functions']['malloc']['']['time_per_iteration']))
             
-            print('Found {} data points in {}...'.format(len(bm[filename]), filepath))
+            print('Found {} data points in {}...'.format(len(benchmark_dict[filename]), filepath))
             
-    plot_graphs(args[0], bm)
+    plot_graphs(args[0], benchmark_dict)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
