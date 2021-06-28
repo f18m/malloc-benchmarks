@@ -102,8 +102,10 @@ def run_benchmark(outfile,thread_values,impl_name):
     last_nthreads = thread_values[len(thread_values)-1]
     bm = {}
     for nthreads in thread_values:
+        # run the external benchmark utility with the LD_PRELOAD trick
 
         try:
+            # 1. Set the `LD_PRELOAD` environment variable
             os.environ["LD_PRELOAD"] = impl_preload_libs[impl_name]
             if len(os.environ["LD_PRELOAD"])>0:
                 # the tcmalloc/jemalloc shared libs require in turn C++ libs:
@@ -113,14 +115,17 @@ def run_benchmark(outfile,thread_values,impl_name):
                     
             utility_fname = benchmark_util[impl_name]
                     
-                    
-            # run the external benchmark utility with the LD_PRELOAD trick
-            print("Running for nthreads={}:\n   LD_PRELOAD='{}' {} {}".format(nthreads,os.environ["LD_PRELOAD"],utility_fname,nthreads))
-            
+            cmd = "{} {} >/tmp/benchmark-output".format(utility_fname, nthreads)
+            full_cmd = "LD_PRELOAD='{}' {}".format(os.environ["LD_PRELOAD"], cmd)
+
+            print("Running this benchmark cmd for nthreads={}:".format(nthreads))
+            print("  {}".format(full_cmd))
+
+            # 2. Call the benchmark cmd
             # the subprocess.check_output() method does not seem to work fine when launching
             # the ld-linux-x86-64.so.2 with --library-path
             #stdout = subprocess.check_output([utility_fname, nthreads])
-            os.system("{} {} >/tmp/benchmark-output".format(utility_fname,nthreads))
+            os.system(cmd)
             stdout = open('/tmp/benchmark-output', 'r').read()
 
             # produce valid JSON output:
@@ -159,7 +164,7 @@ def main(args):
         print("----------------------------------------------------------------------------------------------")
         print("Testing implementation '{}'. Saving results into '{}'".format(implementations[idx],outfile))
         
-        print("Will run tests for {} different number of threads".format(len(thread_values)))
+        print("Will run tests for {} different numbers of threads.".format(len(thread_values)))
         success = success + run_benchmark(outfile,thread_values,implementations[idx])
 
     print("----------------------------------------------------------------------------------------------")
