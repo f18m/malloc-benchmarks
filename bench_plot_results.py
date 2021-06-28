@@ -21,7 +21,9 @@ def plot_graphs(outfilename, benchmark_dict):
     data_dict = benchmark_dict[a_key][0]
     # print("data_dict = {}".format(data_dict))
 
+    # -------------------------
     # Begin plot
+    # -------------------------
 
     plt.figure()
     plt.clf()
@@ -31,7 +33,9 @@ def plot_graphs(outfilename, benchmark_dict):
     rows = 2
     cols = 1
 
+    # -------------------------
     # Subplot 1
+    # -------------------------
 
     plt.subplot(rows, cols, 1)
 
@@ -73,32 +77,31 @@ def plot_graphs(outfilename, benchmark_dict):
     plt.ylim(0, max(max_y)*1.3)
     plt.legend(loc='upper left')
 
+    # -------------------------
     # Subplot 2
+    # -------------------------
 
     plt.subplot(rows, cols, 2)
 
     plt.grid(alpha=.5)
     plt.xlabel('Number of threads')
-    # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
-    plt.ylabel('CPU cycles per sum of (1 free + 1 malloc) op')
+    plt.ylabel('Max Resident Set Size (RSS) RAM usage (in MB)')
 
     nmarker=0
     max_x=[]
     max_y=[]
     for impl_name in benchmark_dict.keys():
         data_list_of_dicts = benchmark_dict[impl_name]
-        # print("data_list_of_dicts = {}".format(data_list_of_dicts))
 
         # add a line plot
         X = [x["threads"] for x in data_list_of_dicts]
-        Y = [y["time_per_iteration"] for y in data_list_of_dicts]
+        # rss default units are in kB, so convert to MB
+        Y = [y["max_rss"]/1000 for y in data_list_of_dicts]
 
         lines = plt.plot(X, Y, '-' + filled_markers[nmarker], label=impl_name)
         plt.setp(lines, 'color', colours[nmarker])
 
         # remember max X/Y
-        # In case you only ran some of the tests, don't attempt to get `max()` on an empty list--ie:
-        # for a benchmark you didn't run. Only operate if the lists aren't empty.
         if X:
             max_x.append(max(X))
         if Y:
@@ -111,7 +114,9 @@ def plot_graphs(outfilename, benchmark_dict):
     plt.ylim(0, max(max_y)*1.3)
     plt.legend(loc='upper left')
 
+    # -------------------------
     # Save and show plots
+    # -------------------------
 
     outfilename_dir = os.path.dirname(outfilename)
     print("Writing plot into '%s'" % outfilename)
@@ -120,8 +125,9 @@ def plot_graphs(outfilename, benchmark_dict):
           "to plot the results again.\n" +
           "- - -").format(outfilename_dir))
     figure = plt.gcf() # get current figure
-    figure.set_size_inches(8, 8)
-    plt.savefig(outfilename)
+    figure.set_size_inches(9, 9)
+    plt.savefig(outfilename, dpi=200)
+    print("Done.")
     plt.show()
 
 

@@ -11,6 +11,9 @@ They will:
    of malloc implementations and numbers of threads
 1. Use [Python matplotlib](https://matplotlib.org/) to produce a plot of the results
 
+**Other high-quality malloc benchmark tools:**
+1. https://github.com/daanx/mimalloc-bench
+
 
 ## Dependencies
 
