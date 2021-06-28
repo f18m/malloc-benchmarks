@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Generate benchmarking results in JSON form, using GNU libc benchmarking utility;
 different allocators are injected into that utility by using LD_PRELOAD trick.
 """
@@ -11,7 +11,7 @@ import subprocess
 # Constants
 #
 
-internal_benchmark_util = 'benchmark-src/bench-malloc-thread'
+internal_benchmark_util = 'glibc-build/benchtests/bench-malloc-thread'
 
 glibc_install_dir = 'glibc-install'
 tcmalloc_install_dir = 'tcmalloc-install'
@@ -26,24 +26,27 @@ impl_preload_libs = {
     'jemalloc': jemalloc_install_dir + '/lib/libjemalloc.so'
 }
 
-# to successfully preload the tcmalloc,jemalloc libs we will also need to preload the C++ standard lib and gcc_s lib:
+# to successfully preload the tcmalloc,jemalloc libs we will also need to preload the C++ standard
+# lib and gcc_s lib:
 preload_required_libs= [ 'libstdc++.so.6', 'libgcc_s.so.1' ]
 preload_required_libs_fullpaths = []
 
 benchmark_util = {
     'system_default': internal_benchmark_util,
     
-    # to test the latest GNU libc implementation downloaded and compiled locally we use another trick:
-    # we ask the dynamic linker of the just-built GNU libc to run the benchmarking utility using new GNU libc dyn libs: 
-    'glibc': glibc_install_dir + '/lib/ld-linux-x86-64.so.2 --library-path ' + glibc_install_dir + '/lib ' + internal_benchmark_util,
+    # to test the latest GNU libc implementation downloaded and compiled locally we use another
+    # trick: we ask the dynamic linker of the just-built GNU libc to run the benchmarking utility
+    # using the new GNU libc dynamic libs:
+    'glibc': (glibc_install_dir + '/lib/ld-linux-x86-64.so.2 --library-path ' + glibc_install_dir +
+             '/lib ' + internal_benchmark_util),
     
     'tcmalloc': internal_benchmark_util,
-    'jemalloc': internal_benchmark_util
+    'jemalloc': internal_benchmark_util,
 }
 
 def find(name, paths):
     for path in paths:
-        #print "Searching into: ", path
+        #print("Searching into: ", path)
         for root, dirs, files in os.walk(path, followlinks=False):
             if name in files:
                 return os.path.join(root, name)
@@ -102,25 +105,30 @@ def run_benchmark(outfile,thread_values,impl_name):
     last_nthreads = thread_values[len(thread_values)-1]
     bm = {}
     for nthreads in thread_values:
+        # run the external benchmark utility with the LD_PRELOAD trick
 
         try:
+            # 1. Set the `LD_PRELOAD` environment variable
             os.environ["LD_PRELOAD"] = impl_preload_libs[impl_name]
             if len(os.environ["LD_PRELOAD"])>0:
                 # the tcmalloc/jemalloc shared libs require in turn C++ libs:
-                #print "preload_required_libs_fullpaths is:", preload_required_libs_fullpaths
+                #print("preload_required_libs_fullpaths is:", preload_required_libs_fullpaths)
                 for lib in preload_required_libs_fullpaths:
                     os.environ["LD_PRELOAD"] = os.environ["LD_PRELOAD"] + ':' + lib
                     
             utility_fname = benchmark_util[impl_name]
                     
-                    
-            # run the external benchmark utility with the LD_PRELOAD trick
-            print("Running for nthreads={}:\n   LD_PRELOAD='{}' {} {}".format(nthreads,os.environ["LD_PRELOAD"],utility_fname,nthreads))
-            
+            cmd = "{} {} >/tmp/benchmark-output".format(utility_fname, nthreads)
+            full_cmd = "LD_PRELOAD='{}' {}".format(os.environ["LD_PRELOAD"], cmd)
+
+            print("Running this benchmark cmd for nthreads={}:".format(nthreads))
+            print("  {}".format(full_cmd))
+
+            # 2. Call the benchmark cmd
             # the subprocess.check_output() method does not seem to work fine when launching
             # the ld-linux-x86-64.so.2 with --library-path
             #stdout = subprocess.check_output([utility_fname, nthreads])
-            os.system("{} {} >/tmp/benchmark-output".format(utility_fname,nthreads))
+            os.system(cmd)
             stdout = open('/tmp/benchmark-output', 'r').read()
 
             # produce valid JSON output:
@@ -156,13 +164,13 @@ def main(args):
             sys.exit(3)
             
         outfile = os.path.join(outfile_path_prefix, implementations[idx] + '-' + outfile_postfix)
-        print "----------------------------------------------------------------------------------------------"
-        print "Testing implementation '{}'. Saving results into '{}'".format(implementations[idx],outfile)
+        print("----------------------------------------------------------------------------------------------")
+        print("Testing implementation '{}'. Saving results into '{}'".format(implementations[idx],outfile))
         
-        print "Will run tests for {} different number of threads".format(len(thread_values))
+        print("Will run tests for {} different numbers of threads.".format(len(thread_values)))
         success = success + run_benchmark(outfile,thread_values,implementations[idx])
 
-    print "----------------------------------------------------------------------------------------------"
+    print("----------------------------------------------------------------------------------------------")
     return success
 
 if __name__ == '__main__':

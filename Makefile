@@ -1,17 +1,22 @@
 #
 # This makefile will build a small benchmarking utility for 'malloc' implementations and will
-# run it with different implementations saving results into JSON files.
+# run it with different implementations, first saving results into JSON files, and then plotting
+# them graphically.
 #
-# Specifically this makefile downloads, configure and compiles 3 different software packages:
-#  - GNU libc
-#  - Google perftools (tcmalloc)
-#  - jemalloc
+# Specifically, this makefile downloads, configures and compiles these different software packages:
+# 1. GNU libc
+# 2. Google perftools (tcmalloc)
+# 3. jemalloc
 #
-# Tested with versions:
-#  - GNU libc 2.26
-#  - Google perftools (tcmalloc) 2.6.3
-#  - jemalloc 5.0.1
+# First tested with these versions:
+# 1. GNU libc 2.26
+# 2. Google perftools (tcmalloc) 2.6.3
+# 3. jemalloc 5.0.1
 #
+# Most-recently tested on Ubuntu 20.04 with these versions:
+# 1. GNU libc 2.31
+# 2. Google perftools (tcmalloc) 2.9.1
+# 3. jemalloc 5.2.1-742
 #
 
 #
@@ -35,8 +40,8 @@ endif
 ifdef NUMPROC
 parallel_flags := -j$(NUMPROC)
 else
-# default value
-parallel_flags := -j4 
+# default value: pull from the max number of hardware processes: `nproc` cmd output; ex: 8
+parallel_flags := -j$(shell nproc)
 endif
 
 ifdef POSTFIX
@@ -50,7 +55,7 @@ ifdef RESULT_DIRNAME
 results_dir := $(RESULT_DIRNAME)
 else
 # default value
-results_dir := results/$(shell date +%F)-$(benchmark_postfix)
+results_dir := results/$(shell date '+%Y.%m.%d-%H%Mhrs-%Ssec')--$(benchmark_postfix)
 endif
 
 ifdef IMPLEMENTATIONS
@@ -69,13 +74,14 @@ endif
 
 topdir=$(shell readlink -f .)
 
-benchmark_result_json := results.json
+benchmark_result_json := results.json # the suffix for the json file names
 benchmark_result_png := results.png
 
 glibc_url := git://sourceware.org/git/glibc.git
 tcmalloc_url := https://github.com/gperftools/gperftools.git
 jemalloc_url := https://github.com/jemalloc/jemalloc.git
 
+# Alternate download version and source if not using the git repo above
 glibc_version := 2.26
 glibc_alt_wget_url := https://ftpmirror.gnu.org/libc/glibc-$(glibc_version).tar.xz
 
@@ -125,6 +131,7 @@ $(glibc_install_dir)/lib/libc.so.6:
 	cd $(glibc_build_dir) && \
 		../glibc/configure --prefix=$(glibc_install_dir) && \
 		make $(parallel_flags) && \
+		make bench-build $(parallel_flags) && \
 		make install
 	[ -x $(glibc_build_dir)/benchtests/bench-malloc-thread ] && echo "GNU libc benchmarking utility is ready!" || echo "Cannot find GNU libc benchmarking utility! Cannot collect benchmark results"
 
@@ -143,7 +150,6 @@ $(jemalloc_install_dir)/lib/libjemalloc.so:
 		( make install || true )
 		
 build:
-	$(MAKE) -C benchmark-src
 ifeq ($(findstring glibc,$(implem_list)),glibc)
 	$(MAKE) $(glibc_install_dir)/lib/libc.so.6
 endif
@@ -157,14 +163,17 @@ endif
 	
 collect_results:
 	@mkdir -p $(results_dir)
-	@echo "Starting to collect performance benchmarks."
-	./bench_collect_results.py "$(implem_list)" $(results_dir)/$(benchmark_result_json) $(benchmark_nthreads)
-	@echo "Collecting hardware information in $(results_dir)/hardware-inventory.txt"
+
+	@echo "Collecting hardware information (sudo required) in $(results_dir)/hardware-inventory.txt"
 	@sudo lshw -short -class memory -class processor	> $(results_dir)/hardware-inventory.txt
 	@echo -n "Number of CPU cores: "					>>$(results_dir)/hardware-inventory.txt
 	@grep "processor" /proc/cpuinfo | wc -l				>>$(results_dir)/hardware-inventory.txt
-	@(which numactl >/dev/null 2>&1) && echo "NUMA informations:" >>$(results_dir)/hardware-inventory.txt
+	# NB: you may need to install `numactl` first with `sudo apt install numactl`.
+	@(which numactl >/dev/null 2>&1) && echo "NUMA information (from 'numactl -H'):" >>$(results_dir)/hardware-inventory.txt
 	@(which numactl >/dev/null 2>&1) && numactl -H >>$(results_dir)/hardware-inventory.txt
+
+	@echo "Starting to collect performance benchmarks."
+	./bench_collect_results.py "$(implem_list)" $(results_dir)/$(benchmark_result_json) $(benchmark_nthreads)
 
 plot_results:
 	./bench_plot_results.py $(results_dir)/$(benchmark_result_png) $(results_dir)/*.json
@@ -173,5 +182,5 @@ plot_results:
 upload_results:
 	git add -f $(results_dir)/*$(benchmark_result_json) $(results_dir)/$(benchmark_result_png) $(results_dir)/hardware-inventory.txt
 	git commit -m "Adding results from folder $(results_dir) to the GIT repository"
-	@echo "Run 'git push' to push online your results (required GIT repo write access)"
+	@echo "Run 'git push' to push online your results (requires GIT repo write access)"
 
