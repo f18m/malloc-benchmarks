@@ -4,21 +4,28 @@
 import sys
 import os
 import json
-import collections
 
 import matplotlib.pyplot as plotlib
 
-BenchmarkPoint = collections.namedtuple('BenchmarkPoint', ['threads', 'time_per_iteration'])
 filled_markers = ('o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X')
 colours = ('r', 'g', 'b', 'black', 'yellow', 'purple')
 
 def plot_graphs(outfilename, benchmark_dict):
     """Plots the given dictionary of benchmark results
     """
-    # print("benchmark_dict = {}".format(benchmark_dict)) #######
+    # print("benchmark_dict = {}".format(benchmark_dict))
+
+    # any one of the data sets--just to grab some subtitle data that is common to all the data sets
+    a_key = list(benchmark_dict.keys())[0]
+    data_dict = benchmark_dict[a_key][0]
+    # print("data_dict = {}".format(data_dict))
+
     plotlib.clf()
     # main figure title
     plotlib.suptitle("Malloc speed tests (tested w/glibc's `benchtests/bench-malloc-thread.c`)")
+    # figure subtitle
+    plotlib.title("num bytes per malloc: min = {}; max = {}".format(data_dict["min_size"],
+        data_dict["max_size"]), fontsize=10)
     plotlib.xlabel('Number of threads')
     # bench-malloc-thread uses RDTSC counter for reporting time => CPU clock cycles
     plotlib.ylabel('CPU cycles per sum of (1 free + 1 malloc) op')
@@ -26,20 +33,14 @@ def plot_graphs(outfilename, benchmark_dict):
     nmarker=0
     max_x=[]
     max_y=[]
-    first_itn = True #######
     for impl_name in benchmark_dict.keys():
-        current_bm = benchmark_dict[impl_name]
-        
-        #############3
-        # if first_itn:
-        #     first_itn = False
-        #     # figure subtitle
-        #     plotlib.title("[min, max] num bytes per malloc = [{}, {}]".format(
-        #         current_bm[0].min_size, current_bm[0].min_size), fontsize=10)
+        data_list_of_dicts = benchmark_dict[impl_name]
+        # print("data_list_of_dicts = {}".format(data_list_of_dicts))
 
         # add a line plot
-        X = [ x.threads for x in current_bm ]
-        Y = [ y.time_per_iteration for y in current_bm ]
+        X = [x["threads"] for x in data_list_of_dicts]
+        Y = [y["time_per_iteration"] for y in data_list_of_dicts]
+
         lines = plotlib.plot(X, Y, '-' + filled_markers[nmarker], label=impl_name)
         plotlib.setp(lines, 'color', colours[nmarker])
         
@@ -82,17 +83,19 @@ def main(args):
             filename = os.path.basename(filepath)
             
             try:
-                bench_list = json.load(benchfile)
+                bench_list_of_dicts = json.load(benchfile)
             except Exception as ex:
                 print("Invalid JSON file {}: {}".format(filepath, ex))
                 sys.exit(2)
-            #print json.dumps(bench_list, sort_keys=True, indent=4, separators=(',', ': '))
-            
+            # print(json.dumps(bench_list_of_dicts, sort_keys=True, indent=4,
+            #     separators=(',', ': ')))
+
             benchmark_dict[filename] = []
-            for bench in bench_list:
-                benchmark_dict[filename].append(BenchmarkPoint(bench['functions']['malloc']['']['threads'], bench['functions']['malloc']['']['time_per_iteration']))
+            for bench in bench_list_of_dicts:
+                data_dict = bench["functions"]["malloc"][""]
+                benchmark_dict[filename].append(data_dict)
             
-            print('Found {} data points in {}...'.format(len(benchmark_dict[filename]), filepath))
+            print('  Found {} data points in {}...'.format(len(benchmark_dict[filename]), filepath))
             
     plot_graphs(args[0], benchmark_dict)
 
